@@ -1,6 +1,6 @@
 name: Events Repository
-description: Manage events within a repository
-author: deniz.blue
+description: Publish Open Evnt events to GitHub Pages
+author: Open Evnt Contributors
 
 branding:
   icon: calendar
@@ -10,7 +10,7 @@ inputs:
   node-version:
     description: The Node.js version to use
     required: false
-    default: '24'
+    default: "24"
   events-path:
     description: The root folder where events are stored
     required: true
@@ -22,17 +22,10 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v3
-      with:
-          version: latest
     - shell: bash
-      run: git clone https://github.com/openevnt/evnt.git /tmp/openevnt
+      run: mkdir /tmp/openevnt-output
     - shell: bash
-      working-directory: /tmp/openevnt
-      run: pnpm install --frozen-lockfile
-    - shell: bash
-      run: pnpx tsx /tmp/openevnt/packages/dev/src/cli.ts
+      run: npx @evnt/dev@latest build ${{ inputs.events-path }} --out /tmp/openevnt-output
     - uses: actions/upload-pages-artifact@v3
       with:
-        path: ./dist
+        path: /tmp/openevnt-output

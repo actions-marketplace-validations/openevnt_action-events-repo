@@ -1,14 +1,11 @@
-# deniz-blue/action-events-repo
+# openevnt/action
 
-A GitHub action to help manage repositories that store [@evnt Event Data](https://github.com/deniz-blue/events-format)
+A GitHub action that allows you to publish [Open Evnt](https://evnt.directory/) files into GitHub Pages.
 
 This action will:
 
-- Check validity of event files
 - Create a `github-pages` artifact to publish
-  - `index.html` -> redirect to `event.nya.pub` with `?action=view-index`
-  - `index.json` -> stores metadata about all the stored events
-  - `events/**/*.json` -> event data
-  - `events/**/.ls` -> `string[]` json for listing directory contents
+  - `events/**/*.evnt.json` -> event data
+  - `feed.json` -> JSON Feed of events
 
-This action uses `@evnt/dev` package under the hood
+This action uses the `@evnt/dev` package
