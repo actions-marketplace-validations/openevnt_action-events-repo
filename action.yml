@@ -15,6 +15,14 @@ inputs:
     description: The root folder where events are stored
     required: true
     default: "./events"
+  schema-url:
+    description: The Open Evnt JSON Schema that every event is checked against
+    required: false
+    default: "https://evnt.directory/openevnt.schema.json"
+  pages-url:
+    description: The URL the site is served from, used for the links in index.json. Defaults to https://<owner>.github.io/<repo>/
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -23,9 +31,13 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
     - shell: bash
-      run: mkdir /tmp/openevnt-output
+      run: npm ci --omit=dev --no-audit --no-fund --prefix "$GITHUB_ACTION_PATH"
     - shell: bash
-      run: npx @evnt/dev@latest build ${{ inputs.events-path }} --out /tmp/openevnt-output
+      env:
+        EVENTS_PATH: ${{ inputs.events-path }}
+        SCHEMA_URL: ${{ inputs.schema-url }}
+        PAGES_URL: ${{ inputs.pages-url }}
+      run: node "$GITHUB_ACTION_PATH/build-pages.mjs" "$EVENTS_PATH" /tmp/openevnt-output "$SCHEMA_URL" "$PAGES_URL"
     - uses: actions/upload-pages-artifact@v3
       with:
         path: /tmp/openevnt-output
